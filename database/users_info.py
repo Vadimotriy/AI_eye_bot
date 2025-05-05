@@ -1,15 +1,14 @@
 import logging
-import os
 
 from aiogram import Bot, Dispatcher
-from dotenv import load_dotenv
-# from data import MyDict
+from constants import API_TOKEN
+from data import MyDict
+from translator import My_Translator
 
 # логирование
 logging.basicConfig(level=logging.INFO)
 
-# USERS = MyDict()
-load_dotenv('../data/.env')
-API_TOKEN = os.getenv("API_TELEGRAMM")
+USERS = MyDict()
+Translator = My_Translator()
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher()
