@@ -22,6 +22,7 @@ def main():
 
         await message.answer(text=text, reply_markup=builder.as_markup(resize_keyboard=True))
 
+    #button 1
     @router.message(StateFilter(None), F.text == "button1")
     async def chooser(message: types.Message, state: FSMContext):
         await message.answer(
