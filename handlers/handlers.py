@@ -7,7 +7,6 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 router = Router()
 router_for_translate = Router()
-dp = Dispatcher()
 
 def main():
     # /start
@@ -19,7 +18,7 @@ def main():
             builder.add(types.KeyboardButton(text=str(i)))
         builder.adjust(2)
 
-        text = ''
+        text = 'asd'
 
         await message.answer(text=text, reply_markup=builder.as_markup(resize_keyboard=True))
 
