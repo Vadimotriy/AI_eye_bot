@@ -1,10 +1,10 @@
-from aiogram import types, F, Router, Dispatcher
+from aiogram import types, F, Router, Bot
 from aiogram.filters import Command, StateFilter
-from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 # from bot.bot import USERS
+from handlers.constants import *
 
 router = Router()
 
@@ -14,38 +14,47 @@ def main():
     @router.message(F.text, Command('start'))
     async def start(message: types.Message):
         builder = ReplyKeyboardBuilder()
-        buttons = ['a', 'b']
-        for i in buttons:
-            builder.add(types.KeyboardButton(text=str(i)))
+        for i in BUTTONS:
+            builder.add(types.KeyboardButton(text=i))
         builder.adjust(2)
 
         text = 'asd'
 
         await message.answer(text=text, reply_markup=builder.as_markup(resize_keyboard=True))
 
-    @router.message(F.text, Command('help'))
-    async def help(message: types.Message):
-        await message.reply(f'Для использования бота, пожалуйста, выберите одну из кнопок которые вам нужны.')
-
-    class photochooser(StatesGroup):
-        photo_choosing = State()
-
-        @router.message(StateFilter(None), F.text == "a")
-        async def chooser(message: types.Message, state: FSMContext):
-            await message.answer(
-                text="Выберите фото"
-            )
-            await state.set_state(photo_choosing)
-
-        @router.message(
-            photochooser.photo_choosing,
-            F.photo
+    @router.message(StateFilter(None), F.text == "button1")
+    async def chooser(message: types.Message, state: FSMContext):
+        await message.answer(
+            text=f"Выберите режим:"
         )
-        async def photo(message: Message, state: FSMContext, bot: Bot):
-            await bot.download(
-                message.photo[-1],
-                destination=f"/tmp/{message.photo[-1].file_id}.jpg"
-            )
+        await state.set_state(PhotoChooser.mode_choosing)
+
+    @router.message(PhotoChooser.mode_choosing, F.text.lower().in_(MODES))
+    async def chooser(message: types.Message, state: FSMContext):
+        await state.update_data(chosen_mode=message.text.lower())
+        await message.answer(
+            text=f"Вы выбрали {message.text}. Отправьте фото:"
+        )
+        await state.set_state(PhotoChooser.photo_sending)
+
+    @router.message(PhotoChooser.mode_choosing)
+    async def chooser_incorrectly(message: types.Message):
+        await message.answer(
+            text="Я не знаю такого размера режима.\n\n"
+                 f"Пожалуйста, выберите один из вариантов из списка ниже: {MODES}"
+        )
+
+    @router.message(PhotoChooser.photo_sending, F.photo)
+    async def chooser(message: types.Message, state: FSMContext, bot: Bot):
+        await bot.download(message.photo[-1], destination=f"../data/{message.photo[-1].file_id}.jpg")
+        await message.answer(text=f"OK")
+        await state.clear()
+
+    @router.message(PhotoChooser.photo_sending)
+    async def chooser_incorrectly(message: types.Message):
+        await message.answer(
+            text="Пришлите фото!"
+        )
 
 
 main()
