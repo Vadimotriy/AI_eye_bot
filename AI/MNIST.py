@@ -38,4 +38,4 @@ test_loss, test_acc = model.evaluate(x_test, y_test)
 print(test_acc)
 
 # Сохранение
-model.save('nums.keras')
+model.save('../data/nums.keras')
