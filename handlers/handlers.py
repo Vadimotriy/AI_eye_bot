@@ -60,5 +60,25 @@ def main():
             text="Пришлите фото!"
         )
 
+    # button2
+    @router.message(StateFilter(None), F.text == "button2")
+    async def chooser(message: types.Message, state: FSMContext):
+        await message.answer(
+            text=f"Отправьте фото:"
+        )
+        await state.set_state(NumberPhoto.photo_send)
+
+    @router.message(NumberPhoto.photo_send, F.photo)
+    async def chooser(message: types.Message, state: FSMContext, bot: Bot):
+        await bot.download(message.photo[-1], destination=f"../data/{message.photo[-1].file_id}.jpg")
+        await message.answer(text=f"OK")
+        await state.clear()
+
+    @router.message(PhotoChooser.photo_sending)
+    async def chooser_incorrectly(message: types.Message):
+        await message.answer(
+            text="Пришлите фото!"
+        )
+
 
 main()
