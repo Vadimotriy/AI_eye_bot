@@ -38,6 +38,7 @@ def main():
         )
         await state.set_state(PhotoChooser.photo_sending)
 
+    # Ошибочный выбор
     @router.message(PhotoChooser.mode_choosing)
     async def chooser_incorrectly(message: types.Message):
         await message.answer(
@@ -45,12 +46,14 @@ def main():
                  f"Пожалуйста, выберите один из вариантов из списка ниже: {MODES}"
         )
 
+    # Финал
     @router.message(PhotoChooser.photo_sending, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
         await bot.download(message.photo[-1], destination=f"../data/{message.photo[-1].file_id}.jpg")
         await message.answer(text=f"OK")
         await state.clear()
 
+    # Ошибочный выбор
     @router.message(PhotoChooser.photo_sending)
     async def chooser_incorrectly(message: types.Message):
         await message.answer(
