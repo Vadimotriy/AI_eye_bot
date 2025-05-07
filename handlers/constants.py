@@ -9,4 +9,4 @@ class NumberPhoto(StatesGroup):
     photo_send = State()
 
 MODES = ['mode1', 'mode2']
-BUTTONS = ['button1', 'button2']
+BUTTONS = ['button1', 'Nums Detector']

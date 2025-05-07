@@ -35,7 +35,7 @@ model.fit(x_train, y_train, epochs=5, batch_size=64)
 
 # Итоговая точность модели
 test_loss, test_acc = model.evaluate(x_test, y_test)
-print(test_acc)
+print(test_acc)  # +- 9904999732971191
 
 # Сохранение
 model.save('../data/nums.keras')

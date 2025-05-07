@@ -1,9 +1,11 @@
+from io import BytesIO
+
 from aiogram import types, F, Router, Bot
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
-# from bot.bot import USERS
+from bot.bot import AI
 from handlers.constants import *
 
 router = Router()
@@ -49,7 +51,6 @@ def main():
     # Финал
     @router.message(PhotoChooser.photo_sending, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
-        await bot.download(message.photo[-1], destination=f"../data/{message.photo[-1].file_id}.jpg")
         await message.answer(text=f"OK")
         await state.clear()
 
@@ -61,7 +62,7 @@ def main():
         )
 
     # button2
-    @router.message(StateFilter(None), F.text == "button2")
+    @router.message(StateFilter(None), F.text == "Nums Detector")
     async def chooser(message: types.Message, state: FSMContext):
         await message.answer(
             text=f"Отправьте фото:"
@@ -70,11 +71,14 @@ def main():
 
     @router.message(NumberPhoto.photo_send, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
-        await bot.download(message.photo[-1], destination=f"../data/{message.photo[-1].file_id}.jpg")
-        await message.answer(text=f"OK")
+        image = BytesIO()
+        await bot.download(message.photo[-1], destination=image)
+
+        res = AI.predict_nums(image)
+        await message.answer(text=f"Мне кажется это {res}")
         await state.clear()
 
-    @router.message(PhotoChooser.photo_sending)
+    @router.message(NumberPhoto.photo_send)
     async def chooser_incorrectly(message: types.Message):
         await message.answer(
             text="Пришлите фото!"
