@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 logging.basicConfig(level=logging.INFO)
 
 # USERS = MyDict()
-load_dotenv('../data/.env')
+load_dotenv('data/.env')
 API_TOKEN = os.getenv("API_TELEGRAM")
 bot = Bot(token=API_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
 dp = Dispatcher()

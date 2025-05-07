@@ -1,6 +1,6 @@
 import asyncio
 
-from bot import bot, dp
+from bot.bot import bot, dp
 from handlers.handlers import router
 from handlers.callbacks import router_callbacks
 
