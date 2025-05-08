@@ -31,11 +31,11 @@ model = models.Sequential([
 
 # Компеляция и обучение
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit(x_train, y_train, epochs=5, batch_size=64)
+model.fit(x_train, y_train, epochs=100, batch_size=32)
 
 # Итоговая точность модели
 test_loss, test_acc = model.evaluate(x_test, y_test)
 print(test_acc)  # +- 9904999732971191
 
 # Сохранение
-model.save('../data/nums.keras')
+model.save('data/nums2.keras')

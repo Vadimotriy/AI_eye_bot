@@ -74,8 +74,11 @@ def main():
         image = BytesIO()
         await bot.download(message.photo[-1], destination=image)
 
-        res = AI.predict_nums(image)
-        await message.answer(text=f"Мне кажется это {res}")
+        res = AI.predict_nums(image, False)
+        text = ''
+        for key, val in sorted(list(res.items()), key=lambda x: x[1]):
+            text += f"{key} - {round(float(val * 100), 2)}%\n"
+        await message.answer(text=text)
         await state.clear()
 
     @router.message(NumberPhoto.photo_send)
