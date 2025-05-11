@@ -1,14 +1,18 @@
 import tensorflow
 import numpy as np
+import easyocr
 
 from PIL import Image
 
+from database.constants import LANGUAGES_FOR_PHOTOES
 
-class AI:
-    def __init__(self):
+
+class AI:  # класс, для работы с нейросетями
+    def __init__(self):  # инициализация
         self.model = tensorflow.keras.models.load_model('data/nums1.keras')
 
-    def predict_nums(self, image, better):
+
+    def predict_nums(self, image, better):  # использование нашей модели
         image = Image.open(image)
         image = image.convert("L")
         image = image.resize((28, 28))
@@ -31,4 +35,14 @@ class AI:
             d[num] = per
 
         return d
+
+    def get_text(self, image, src: str):  # использование EasyOCR
+        languages = []
+        for i in src:
+            languages.append(LANGUAGES_FOR_PHOTOES[i.capitalize()])
+
+        self.reader = easyocr.Reader(languages, gpu=True)
+        text = self.reader.readtext(image, detail=0, paragraph=True)
+
+        return text
 

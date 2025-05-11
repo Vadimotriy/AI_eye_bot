@@ -3,10 +3,10 @@ from io import BytesIO
 from aiogram import types, F, Router, Bot
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 from bot.bot import AI
-from handlers.constants import *
+from database.constants import *
 
 router = Router()
 
