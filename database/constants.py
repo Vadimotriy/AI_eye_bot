@@ -9,7 +9,7 @@ class NumberPhoto(StatesGroup):
     photo_send = State()
 
 MODES = ['mode1', 'mode2']
-BUTTONS = ['button1', 'Nums Detector']
+BUTTONS = ['button1', 'Nums Detector', "распознать текст на фото"]
 
 
 LANGUAGES_FOR_PHOTOES = {

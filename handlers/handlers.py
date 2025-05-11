@@ -3,7 +3,7 @@ from io import BytesIO
 from aiogram import types, F, Router, Bot
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
+from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 
 from bot.bot import AI
 from database.constants import *
@@ -87,5 +87,50 @@ def main():
             text="Пришлите фото!"
         )
 
+    @router.message(StateFilter(None), F.text == "распознать текст на фото")
+    async def chooser(message: types.Message, state: FSMContext):
+        builder = InlineKeyboardBuilder()
+        builder.add(types.InlineKeyboardButton(
+            text=f"Список доступных языков",
+            callback_data=f'список'))
+
+        await message.answer(f'''введите языки текстов, которые есть на изображении или нажмите /skip\n''',
+                             reply_markup=builder.as_markup())
+
+
+    @router.message(NumberPhoto.photo_send, F.text)
+    async def chooser(message: types.Message, state: FSMContext, bot: Bot):
+        txt = message.text.split(' ')
+        for el in txt:
+            if el not in LANGUAGES_FOR_PHOTOES.keys():
+
+
+
+def callbacks():
+    @router_for_callbacks.callback_query(F.data.startswith('список'))
+    async def send_random_value(callback: types.CallbackQuery):
+
+        builder = InlineKeyboardBuilder()  # создание кнопки назад
+        builder.add(types.InlineKeyboardButton(text=f"Назад", callback_data=f'back'))
+        await callback.message.edit_text(
+            text=f"{LANGUAGES_FOR_PHOTOES.keys()}",
+            reply_markup=builder.as_markup(),
+        )
+        await callback.answer()
+
+    # функция кнопки назад. По большей части, нужно просто скопировать исходный хендлер
+    @router_for_callbacks.callback_query(F.data.startswith('back'))
+    async def send_random_value(callback: types.CallbackQuery):
+        builder = InlineKeyboardBuilder()
+        builder.add(types.InlineKeyboardButton(
+            text=f"Список доступных языков",
+            callback_data=f'список'))
+
+        # единственное отличие это message.edit_text, а не message.answer
+        await callback.message.edit_text(f'''введите языки текстов, которые есть на изображении или нажмите /skip\n''',
+                                        reply_markup=builder.as_markup())
+        await callback.answer()
+
 
 main()
+callbacks()
