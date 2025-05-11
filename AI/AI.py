@@ -45,4 +45,3 @@ class AI:  # класс, для работы с нейросетями
         text = self.reader.readtext(image, detail=0, paragraph=True)
 
         return text
-
