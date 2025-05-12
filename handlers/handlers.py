@@ -94,7 +94,7 @@ def main():
             text=f"Список доступных языков",
             callback_data=f'список'))
 
-        await message.answer(f'''введите языки текстов, которые есть на изображении или нажмите /skip\n''',
+        await message.answer(f'''Введите языки текстов, которые есть на изображении или нажмите /skip\n''',
                              reply_markup=builder.as_markup())
         await state.set_state(textphoto.langchoose)
 
@@ -104,8 +104,8 @@ def main():
         txt = message.text.split(' ')
         flag = True
         for el in txt:
-            if el not in LANGUAGES_FOR_PHOTOES.keys():
-                await message.answer(f"такого языка нет в списке!- {el}")
+            if el.title() not in LANGUAGES_FOR_PHOTOES.keys():
+                await message.answer(f"Такого языка нет в списке! - {el}")
                 flag = False
         if flag:
             await message.answer(f"Пришлите фото")
@@ -117,7 +117,7 @@ def main():
         await state.clear()
 
     # Ошибочный выбор
-    @router.message(PhotoChooser.photo_sending)
+    @router.message(textphoto.photo_snd)
     async def chooser_incorrectly(message: types.Message):
         await message.answer(
             text="Пришлите фото!"

@@ -15,7 +15,7 @@ def callbacks():
         builder = InlineKeyboardBuilder()  # создание кнопки назад
         builder.add(types.InlineKeyboardButton(text=f"Назад", callback_data=f'back'))
         await callback.message.edit_text(
-            text=f"вот список доступных языков: \n\n{'\n'.join(list(LANGUAGES_FOR_PHOTOES.keys()))}",
+            text=f"Вот список доступных языков: \n\n{'\n'.join(list(LANGUAGES_FOR_PHOTOES.keys()))}",
             reply_markup=builder.as_markup(),
         )
         await callback.answer()
@@ -29,7 +29,7 @@ def callbacks():
             callback_data=f'список'))
 
         # единственное отличие это message.edit_text, а не message.answer
-        await callback.message.edit_text(f'''введите языки текстов, которые есть на изображении или нажмите /skip\n''',
+        await callback.message.edit_text(f'''Введите языки текстов, которые есть на изображении или нажмите /skip\n''',
                                         reply_markup=builder.as_markup())
         await callback.answer()
 
