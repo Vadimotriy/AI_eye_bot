@@ -27,7 +27,7 @@ def main():
 
         await message.answer(text=text, reply_markup=builder.as_markup(resize_keyboard=True))
 
-    #button 1
+    # button 1
     @router.message(StateFilter(None), F.text == "button1")
     async def chooser(message: types.Message, state: FSMContext):
         await message.answer(
@@ -97,10 +97,10 @@ def main():
             text=f"Список доступных языков",
             callback_data=f'список'))
 
-        await message.answer(f'''Введите языки текстов, которые есть на изображении или нажмите /skip\n''',
-                             reply_markup=builder.as_markup())
+        await message.answer(
+            f'''Введите языки текстов (до трех включительно), которые есть на изображении или нажмите /skip\n''',
+            reply_markup=builder.as_markup())
         await state.set_state(textphoto.langchoose)
-
 
     @router.message(textphoto.langchoose, F.text)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
