@@ -41,12 +41,13 @@ class AsyncQueue:
 
     # отправка результата
     async def send_result(self, user_id, result):
-        if result:
+        if result[0][0]:
             text = "\n".join(result[0])
             image = result[1]
-            await bot.send_photo(chat_id=user_id, caption=f"✅ Результат:\n\n{text}",
+            await bot.send_photo(chat_id=user_id, caption=f"Изображение",
                                  photo=types.BufferedInputFile(file=image.getvalue(), filename="image.png")
                                  )
+            await bot.send_message(chat_id=user_id, text=f"✅ Результат:\n\n{text}")
         else:
             await bot.send_message(chat_id=user_id, text=f"❌ Текст не найден.")
 
