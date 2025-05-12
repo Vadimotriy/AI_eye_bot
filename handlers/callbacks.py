@@ -15,7 +15,7 @@ def callbacks():
         builder = InlineKeyboardBuilder()  # создание кнопки назад
         builder.add(types.InlineKeyboardButton(text=f"Назад", callback_data=f'back'))
         await callback.message.edit_text(
-            text=f"{LANGUAGES_FOR_PHOTOES.keys()}",
+            text=f"вот список доступных языков: \n\n{'\n'.join(list(LANGUAGES_FOR_PHOTOES.keys()))}",
             reply_markup=builder.as_markup(),
         )
         await callback.answer()
