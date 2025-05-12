@@ -1,8 +1,8 @@
 import asyncio
 import concurrent.futures
+from aiogram import types
 
 from bot.bot import AI, bot
-
 
 
 class AsyncQueue:
@@ -42,10 +42,13 @@ class AsyncQueue:
     # отправка результата
     async def send_result(self, user_id, result):
         if result:
-            text = "\n".join(result)
-            await bot.send_message(user_id, f"✅ Результат: \n\n\n{text}")
+            text = "\n".join(result[0])
+            image = result[1]
+            await bot.send_photo(chat_id=user_id, caption=f"✅ Результат:\n\n{text}",
+                                 photo=types.BufferedInputFile(file=image.getvalue(), filename="image.png")
+                                 )
         else:
-            await bot.send_message(user_id, f"❌ Текст не найден.")
+            await bot.send_message(chat_id=user_id, text=f"❌ Текст не найден.")
 
     # для отладки
     async def send_error(self, user_id, error):

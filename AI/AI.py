@@ -2,7 +2,8 @@ import tensorflow
 import numpy as np
 import easyocr
 
-from PIL import Image
+from PIL import Image, ImageDraw
+from io import BytesIO
 
 from database.constants import LANGUAGES_FOR_PHOTOES
 
@@ -42,6 +43,18 @@ class AI:  # класс, для работы с нейросетями
             languages.append(LANGUAGES_FOR_PHOTOES[i.capitalize()])
 
         self.reader = easyocr.Reader(languages, gpu=True)
-        text = self.reader.readtext(image, detail=0, paragraph=True)
+        result = self.reader.readtext(image, paragraph=True)
+        text = []
 
-        return text
+        # обводка текста
+        draw = ImageDraw.Draw(image)
+        for i in result:
+            points, words = i
+            text.append(words)
+            polygon = [(int(x), int(y)) for (x, y) in points]
+            draw.polygon(polygon, outline="red", width=2)
+        img_byte = BytesIO()
+        image.save(img_byte, format="PNG")
+        img_byte.seek(0)
+
+        return text, img_byte
