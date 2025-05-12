@@ -1,4 +1,5 @@
 from io import BytesIO
+from PIL import Image
 
 from aiogram import types, F, Router, Bot
 from aiogram.filters import Command, StateFilter
@@ -7,8 +8,10 @@ from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from handlers.callbacks import router_for_callbacks
 from bot.bot import AI
 from database.constants import *
+from handlers.queue import AsyncQueue
 
 router = Router()
+quque = AsyncQueue()
 
 
 def main():
@@ -102,18 +105,30 @@ def main():
     @router.message(textphoto.langchoose, F.text)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
         txt = message.text.split(' ')
+        txt = txt if len(txt) <= 3 else txt[:3]
         flag = True
         for el in txt:
             if el.title() not in LANGUAGES_FOR_PHOTOES.keys():
                 await message.answer(f"Такого языка нет в списке! - {el}")
                 flag = False
         if flag:
+            await state.update_data(langs=txt)
             await message.answer(f"Пришлите фото")
             await state.set_state(textphoto.photo_snd)
 
     @router.message(textphoto.photo_snd, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
-        await message.answer(text=f"OK")
+        await message.bot.send_chat_action(message.chat.id, 'typing')
+        image = BytesIO()
+        await bot.download(message.photo[-1], destination=image)
+        image = Image.open(image)
+
+        langs = await state.get_data()
+        langs = langs['langs']
+
+        await quque.add_task(message.from_user.id, image, langs)
+        await message.answer("Изображение добавлено в очередь. Мы пришлем результат как только будет готов!")
+
         await state.clear()
 
     # Ошибочный выбор

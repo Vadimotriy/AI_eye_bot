@@ -19,19 +19,21 @@ y_test = to_categorical(y_test)
 
 # 8-слояная модель
 model = models.Sequential([
-    layers.Flatten(input_shape=(28, 28, 1)),
-    layers.Dense(128, 'relu'),
-    layers.Dropout(0.2),
-    layers.Dense(10, 'softmax')
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+    layers.MaxPooling2D((3, 3)),
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(10, activation='softmax')
 ])
 
 # Компеляция и обучение
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-model.fit(x_train, y_train, epochs=25)
+model.fit(x_train, y_train, epochs=35)
 
 # Итоговая точность модели
 test_loss, test_acc = model.evaluate(x_test, y_test)
 print(test_acc)  # +- 9904999732971191
 
 # Сохранение
-model.save('data/nums174.keras')
+model.save('data/nums190.keras')
