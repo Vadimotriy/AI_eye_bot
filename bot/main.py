@@ -2,11 +2,11 @@ import asyncio
 
 from bot.bot import bot, dp
 from handlers.handlers import router
-from handlers.callbacks import router_callbacks
+from handlers.callbacks import router_for_callbacks
 
 if __name__ == '__main__':  # запуск программы
     dp.include_router(router)
-    dp.include_router(router_callbacks)
+    dp.include_router(router_for_callbacks)
 
 
     async def main():

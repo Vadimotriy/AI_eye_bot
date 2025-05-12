@@ -8,6 +8,11 @@ class PhotoChooser(StatesGroup):
 class NumberPhoto(StatesGroup):
     photo_send = State()
 
+
+class textphoto(StatesGroup):
+    langchoose = State()
+    photo_snd = State()
+
 MODES = ['mode1', 'mode2']
 BUTTONS = ['button1', 'Nums Detector', "распознать текст на фото"]
 
