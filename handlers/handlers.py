@@ -104,7 +104,8 @@ def main():
 
     @router.message(textphoto.langchoose, F.text == "/skip")
     async def chooser(message: types.Message, state: FSMContext):
-        await state.update_data(langs=esh(message.from_user.id))
+        txt = esh(message.from_user.id).split(' ')
+        await state.update_data(langs=txt)
         await message.answer(f"Пришлите фото")
         await state.set_state(textphoto.photo_snd)
 

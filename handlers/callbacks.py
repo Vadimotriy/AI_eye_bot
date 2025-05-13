@@ -4,7 +4,7 @@ from aiogram.enums import ParseMode
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
 from database.constants import *
 # from bot.bot import USERS
-
+from database.users_info import *
 router_for_callbacks = Router()
 
 
@@ -30,8 +30,9 @@ def callbacks():
             callback_data=f'список'))
 
         # единственное отличие это message.edit_text, а не message.answer
-        await callback.message.edit_text(f'''Введите языки текстов, которые есть на изображении или нажмите /skip\n''',
-                                        reply_markup=builder.as_markup())
+        sr = savedones(callback.from_user.id)
+        await callback.message.edit_text(f'''Введите языки текстов (до трех включительно), которые есть на изображении {sr}\n''',
+            reply_markup=builder.as_markup())
         await callback.answer()
 
 
