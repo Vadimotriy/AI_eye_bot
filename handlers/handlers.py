@@ -9,7 +9,7 @@ from handlers.callbacks import router_for_callbacks
 from bot.bot import AI
 from database.constants import *
 from handlers.queue import AsyncQueue
-
+from database.users_info import *
 router = Router()
 quque = AsyncQueue()
 
@@ -96,11 +96,17 @@ def main():
         builder.add(types.InlineKeyboardButton(
             text=f"Список доступных языков",
             callback_data=f'список'))
-
+        sr = savedones(message.from_user.id)
         await message.answer(
-            f'''Введите языки текстов (до трех включительно), которые есть на изображении или нажмите /skip\n''',
+            f'''Введите языки текстов (до трех включительно), которые есть на изображении {sr}\n''',
             reply_markup=builder.as_markup())
         await state.set_state(textphoto.langchoose)
+
+    @router.message(textphoto.langchoose, F.text == "/skip")
+    async def chooser(message: types.Message, state: FSMContext):
+        await state.update_data(langs=esh(message.from_user.id))
+        await message.answer(f"Пришлите фото")
+        await state.set_state(textphoto.photo_snd)
 
     @router.message(textphoto.langchoose, F.text)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
@@ -112,6 +118,8 @@ def main():
                 await message.answer(f"Такого языка нет в списке! - {el}")
                 flag = False
         if flag:
+            langs = ' '.join(txt)
+            savedata(message.from_user.id, langs)
             await state.update_data(langs=txt)
             await message.answer(f"Пришлите фото")
             await state.set_state(textphoto.photo_snd)
