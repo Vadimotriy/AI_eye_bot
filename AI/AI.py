@@ -1,6 +1,9 @@
 import tensorflow
 import numpy as np
 import easyocr
+import requests
+from googletrans import Translator
+
 
 from PIL import Image, ImageDraw
 from io import BytesIO
@@ -9,9 +12,11 @@ from database.constants import LANGUAGES_FOR_PHOTOES
 
 
 class AI:  # класс, для работы с нейросетями
-    def __init__(self):  # инициализация
+    def __init__(self, api, secret):  # инициализация
+        self.api, self.secret = api, secret
         self.model = tensorflow.keras.models.load_model('data/nums1.keras')
-
+        self.session = None
+        self.translator = Translator()
 
     def predict_nums(self, image, better):  # использование нашей модели
         image = Image.open(image)
@@ -58,3 +63,22 @@ class AI:  # класс, для работы с нейросетями
         img_byte.seek(0)
 
         return text, img_byte
+
+    def get_tags(self, image):  # распознание объектов на фото
+        response = requests.post(
+            'https://api.imagga.com/v2/tags',
+            auth=(self.api, self.secret),
+            files={'image': image})
+
+        data = response.json()
+
+        text = ''
+        for i in data['result']['tags']:
+            conf = float(i['confidence'])
+            if conf < 40:
+                break
+
+            rus = self.translator.translate(i['tag']['en'], src='en', dest='ru').text
+            text += f"<b>{i['tag']['en']} ({rus})<b> - вероятность {round(conf, 1)}%\n".capitalize()
+
+        return text

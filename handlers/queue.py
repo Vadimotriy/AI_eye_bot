@@ -49,16 +49,16 @@ class AsyncQueue:
                     chat_id=user_id, caption=f"Изображение",
                     photo=types.BufferedInputFile(file=image.getvalue(), filename="image.png")
                 )
-                await bot.send_message(chat_id=user_id, text=f"✅ Результат:\n\n{text}", parse_mode=None)
+                await bot.send_message(chat_id=user_id, text=f"Результат:\n\n{text}", parse_mode=None)
             else:
                 await bot.send_photo(
-                    chat_id=user_id, caption=f"✅ Результат:\n\n{text}",
+                    chat_id=user_id, caption=f"Результат:\n\n{text}",
                     photo=types.BufferedInputFile(file=image.getvalue(), filename="image.png"),
                     parse_mode=None
                 )
         else:
-            await bot.send_message(chat_id=user_id, text=f"❌ Текст не найден.")
+            await bot.send_message(chat_id=user_id, text=f"Текст не найден.")
 
     # для отладки
     async def send_error(self, user_id, error):
-        await bot.send_message(chat_id=user_id, text=f"❌ Ошибка: {error}")
+        await bot.send_message(chat_id=user_id, text=f"Ошибка: {error}")

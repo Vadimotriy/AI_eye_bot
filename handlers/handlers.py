@@ -38,7 +38,16 @@ def main():
 
     @router.message(PhotoChooser.photo_sending, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
-        await message.answer(text=f"OK")
+        await message.bot.send_chat_action(message.chat.id, 'typing')
+        image = BytesIO()
+        await bot.download(message.photo[-1], destination=image)
+
+        result = AI.get_tags(image)
+
+        if result is None:
+            await message.answer("Извините! Произошла какая-то ошибка. Попробуйте повторить запрос позже.")
+        else:
+            await message.answer(result)
         await state.clear()
 
     # Ошибочный выбор
@@ -63,8 +72,10 @@ def main():
 
         res = AI.predict_nums(image, False)
         text = ''
+
         for key, val in sorted(list(res.items()), key=lambda x: x[1]):
             text += f"{key} - {round(float(val * 100), 2)}%\n"
+
         await message.answer(text=text)
         await state.clear()
 
