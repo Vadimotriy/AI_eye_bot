@@ -14,7 +14,7 @@ class textphoto(StatesGroup):
     photo_snd = State()
 
 MODES = ['mode1', 'mode2']
-BUTTONS = ['button1', 'Nums Detector', "распознать текст на фото"]
+BUTTONS = ['распознать объекты на фото', 'Nums Detector', "распознать текст на фото"]
 
 
 LANGUAGES_FOR_PHOTOES = {

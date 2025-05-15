@@ -28,30 +28,14 @@ def main():
         await message.answer(text=text, reply_markup=builder.as_markup(resize_keyboard=True))
 
     # button 1
-    @router.message(StateFilter(None), F.text == "button1")
+    @router.message(StateFilter(None), F.text == "распознать объекты на фото")
     async def chooser(message: types.Message, state: FSMContext):
         await message.answer(
-            text=f"Выберите режим:"
-        )
-        await state.set_state(PhotoChooser.mode_choosing)
-
-    @router.message(PhotoChooser.mode_choosing, F.text.lower().in_(MODES))
-    async def chooser(message: types.Message, state: FSMContext):
-        await state.update_data(chosen_mode=message.text.lower())
-        await message.answer(
-            text=f"Вы выбрали {message.text}. Отправьте фото:"
+            text=f"Отправьте фото:"
         )
         await state.set_state(PhotoChooser.photo_sending)
 
-    # Ошибочный выбор
-    @router.message(PhotoChooser.mode_choosing)
-    async def chooser_incorrectly(message: types.Message):
-        await message.answer(
-            text="Я не знаю такого размера режима.\n\n"
-                 f"Пожалуйста, выберите один из вариантов из списка ниже: {MODES}"
-        )
 
-    # Финал
     @router.message(PhotoChooser.photo_sending, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
         await message.answer(text=f"OK")
