@@ -2,7 +2,6 @@ from aiogram.fsm.state import StatesGroup, State
 
 
 class PhotoChooser(StatesGroup):
-    mode_choosing = State()
     photo_sending = State()
 
 class NumberPhoto(StatesGroup):
@@ -13,8 +12,13 @@ class textphoto(StatesGroup):
     langchoose = State()
     photo_snd = State()
 
-MODES = ['mode1', 'mode2']
-BUTTONS = ['распознать объекты на фото', 'Nums Detector', "распознать текст на фото"]
+class AdminConf(StatesGroup):
+    conf_choose = State()
+
+
+BUTTONS = ['Nums Detector', 'распознать объекты на фото', "распознать текст на фото"]
+BUTTONS_ADMIN_BEFORE = ['Отключить перевод', "Изменить точность", "Вернуться"]
+BUTTONS_ADMIN_AFTER = ['Включить перевод', "Изменить точность", "Вернуться"]
 
 
 LANGUAGES_FOR_PHOTOES = {
@@ -76,3 +80,5 @@ LANGUAGES_FOR_PHOTOES = {
     'Эстонский': 'et',
     'Японский': 'ja'
 }
+
+ADMINS = [1602858870, 1422638597]

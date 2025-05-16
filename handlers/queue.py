@@ -61,4 +61,4 @@ class AsyncQueue:
 
     # для отладки
     async def send_error(self, user_id, error):
-        await bot.send_message(chat_id=user_id, text=f"Ошибка: {error}")
+        await bot.send_message(chat_id=user_id, text=f"Ошибка! Вероятнее всего, у вас несовместимые язки.")

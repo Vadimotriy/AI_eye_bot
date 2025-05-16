@@ -5,11 +5,11 @@ from aiogram import types, F, Router, Bot
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 from aiogram.utils.keyboard import ReplyKeyboardBuilder, InlineKeyboardBuilder
-from handlers.callbacks import router_for_callbacks
 from bot.bot import AI
 from database.constants import *
 from handlers.queue import AsyncQueue
 from database.users_info import *
+
 router = Router()
 quque = AsyncQueue()
 
@@ -18,10 +18,17 @@ def main():
     # /start
     @router.message(F.text, Command('start'))
     async def start(message: types.Message):
+        print(message.from_user.id)
+
+        if message.from_user.id in ADMINS:
+            buttons = BUTTONS[:] + ['⚙️АДМИН ПАНЕЛЬ⚙️']
+        else:
+            buttons = BUTTONS[:]
+
         builder = ReplyKeyboardBuilder()
-        for i in BUTTONS:
+        for i in buttons:
             builder.add(types.KeyboardButton(text=i))
-        builder.adjust(2)
+        builder.adjust(1)
 
         text = 'asd'
 
@@ -35,19 +42,21 @@ def main():
         )
         await state.set_state(PhotoChooser.photo_sending)
 
-
     @router.message(PhotoChooser.photo_sending, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):
         await message.bot.send_chat_action(message.chat.id, 'typing')
         image = BytesIO()
         await bot.download(message.photo[-1], destination=image)
+        try:
+            result = AI.get_tags(image)
+            print(result)
 
-        result = AI.get_tags(image)
-
-        if result is None:
-            await message.answer("Извините! Произошла какая-то ошибка. Попробуйте повторить запрос позже.")
-        else:
             await message.answer(result)
+
+        except Exception as e:
+            print(e)
+            await message.answer("Извините! Произошла какая-то ошибка. Попробуйте повторить запрос позже.")
+
         await state.clear()
 
     # Ошибочный выбор
@@ -119,6 +128,12 @@ def main():
             await state.update_data(langs=txt)
             await message.answer(f"Пришлите фото")
             await state.set_state(textphoto.photo_snd)
+
+    @router.message(textphoto.langchoose)
+    async def chooser_incorrectly(message: types.Message):
+        await message.answer(
+            text="Введите языки текстов!"
+        )
 
     @router.message(textphoto.photo_snd, F.photo)
     async def chooser(message: types.Message, state: FSMContext, bot: Bot):

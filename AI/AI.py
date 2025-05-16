@@ -9,6 +9,7 @@ from PIL import Image, ImageDraw
 from io import BytesIO
 
 from database.constants import LANGUAGES_FOR_PHOTOES
+from database.functions import open_file
 
 
 class AI:  # класс, для работы с нейросетями
@@ -17,6 +18,11 @@ class AI:  # класс, для работы с нейросетями
         self.model = tensorflow.keras.models.load_model('data/nums1.keras')
         self.session = None
         self.translator = Translator()
+
+        self.update()
+
+    def update(self):
+        self.translation, self.conf = open_file()
 
     def predict_nums(self, image, better):  # использование нашей модели
         image = Image.open(image)
@@ -69,16 +75,18 @@ class AI:  # класс, для работы с нейросетями
             'https://api.imagga.com/v2/tags',
             auth=(self.api, self.secret),
             files={'image': image})
-
         data = response.json()
 
         text = ''
         for i in data['result']['tags']:
             conf = float(i['confidence'])
-            if conf < 40:
+            if conf < self.conf:
                 break
 
-            rus = self.translator.translate(i['tag']['en'], src='en', dest='ru').text
-            text += f"<b>{i['tag']['en']} ({rus})<b> - вероятность {round(conf, 1)}%\n".capitalize()
+            if self.translation:
+                rus = self.translator.translate(i['tag']['en'], src='en', dest='ru').text
+                text += f"<b>{i['tag']['en']} ({rus})<b> - вероятность {round(conf, 1)}%\n".capitalize()
+            else:
+                text += f"<b>{i['tag']['en']}<b> - вероятность {round(conf, 1)}%\n".capitalize()
 
         return text
