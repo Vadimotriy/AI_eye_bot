@@ -85,8 +85,8 @@ class AI:  # класс, для работы с нейросетями
 
             if self.translation:
                 rus = self.translator.translate(i['tag']['en'], src='en', dest='ru').text
-                text += f"<b>{i['tag']['en']} ({rus})<b> - вероятность {round(conf, 1)}%\n".capitalize()
+                text += f"<b>{i['tag']['en']} ({rus})</b> - вероятность {round(conf, 1)}%\n".capitalize()
             else:
-                text += f"<b>{i['tag']['en']}<b> - вероятность {round(conf, 1)}%\n".capitalize()
+                text += f"<b>{i['tag']['en']}</b> - вероятность {round(conf, 1)}%\n".capitalize()
 
         return text
