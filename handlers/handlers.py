@@ -36,7 +36,8 @@ def main():
             builder.add(types.KeyboardButton(text=i))
         builder.adjust(1)
 
-        text = 'Здравствуйте! выберите функцию, которая вам подходит. Что делают функции можете увидеть командой /help'
+        text = (f'Привет {message.from_user.full_name}!\n\n Я - AI Eye bot, твой цифровой помощник!\n'
+                f'о моих функциях ты можешь узнать командой /help.\n\n Всё просто! 😎')
 
         await message.answer(text=text, reply_markup=builder.as_markup(resize_keyboard=True))
 
