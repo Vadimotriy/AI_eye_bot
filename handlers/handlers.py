@@ -15,6 +15,12 @@ quque = AsyncQueue()
 
 
 def main():
+    @router.message(F.text, Command('help'))
+    async def start(message: types.Message):
+        await message.answer(text="функции бота:\n\n <b> Nums Detector </b> принимает фото и выводит цифру, которая на нём изображена\n"
+                                  "<b> распознать </b> объекты на фото - распознает и выводит объекты, \n"
+                                  "которые, скорее всего, изображены на фото\n"
+                                  "<b> распознать текст на фото </b> - принимает языки и выводит текст на этих языках с фото")
     # /start
     @router.message(F.text, Command('start'))
     async def start(message: types.Message):
@@ -30,7 +36,7 @@ def main():
             builder.add(types.KeyboardButton(text=i))
         builder.adjust(1)
 
-        text = 'asd'
+        text = 'Здравствуйте! выберите функцию, которая вам подходит. Что делают функции можете увидеть командой /help'
 
         await message.answer(text=text, reply_markup=builder.as_markup(resize_keyboard=True))
 
